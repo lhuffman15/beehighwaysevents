@@ -157,13 +157,22 @@
     if (m && /google/.test(u)) return "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1600";
     return u;
   }
+  // Finds the settings for an event type in config.js (tag color + standard text).
+  var COLORS = ["road", "goldenrod", "frame", "meadow", "sky", "plain"];
+  function typeInfo(t) {
+    var name = (t || "").toLowerCase();
+    var types = CONFIG.eventTypes || [];
+    for (var i = 0; i < types.length; i++) {
+      var words = [types[i].match, types[i].name].filter(Boolean);
+      for (var j = 0; j < words.length; j++) {
+        if (name.indexOf(String(words[j]).toLowerCase()) > -1) return types[i];
+      }
+    }
+    return CONFIG.otherEventType || {};
+  }
   function typeClass(t) {
-    t = (t || "").toLowerCase();
-    if (/mulch/.test(t)) return "tag--mulch";
-    if (/care|weed|water|maint/.test(t)) return "tag--care";
-    if (/meet|talk|workshop|class/.test(t)) return "tag--meeting";
-    if (/plant|party/.test(t)) return "";
-    return "tag--other";
+    var c = typeInfo(t).color;
+    return "tag--" + (COLORS.indexOf(c) > -1 ? c : "plain");
   }
   var PIN = '<svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true"><path d="M7 15s5-5.1 5-8.6A5 5 0 0 0 2 6.4C2 9.9 7 15 7 15Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7" cy="6.4" r="1.8" fill="currentColor"/></svg>';
   var CHEV = '<svg class="chev" width="12" height="8" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 6 6.5l5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -195,6 +204,11 @@
         photos: []
       };
       if (ev.startMin == null) ev.endMin = null;
+      // Blank fields fall back to the standard text for this event type (config.js).
+      var info = typeInfo(ev.type);
+      if (!ev.short && info.short) ev.short = info.short;
+      if (!ev.full && info.full) ev.full = info.full;
+      if (!ev.bring && info.bring) ev.bring = info.bring;
       cols.photos.forEach(function (c) {
         (r[c] || "").split(/[\s,]+/).forEach(function (u) {
           if (/^https?:\/\//.test(u)) ev.photos.push(photoUrl(u));
