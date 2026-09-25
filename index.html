@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pollinator Parties | Bee Highways</title>
+  <meta name="description" content="Upcoming Bee Highways Pollinator Parties in the East Bay. Come plant California native gardens with us. All ages welcome.">
+  <meta property="og:title" content="Pollinator Parties | Bee Highways">
+  <meta property="og:description" content="Come plant a Bee Highway with us. All ages, abilities and talents are welcome.">
+  <meta property="og:image" content="assets/img/meadow-1200.jpg">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐝</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="preload" href="assets/fonts/ALoveOfThunder.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#schedule">Skip to the schedule</a>
+
+  <header class="hero" id="top">
+    <div class="hero__sky">
+      <p class="hero__lockup">Bee Highways</p>
+      <h1 class="hero__title">Pollinator Parties</h1>
+      <p class="hero__lede">Come plant a Bee Highway with us! Music, snacks &amp; fun.</p>
+      <p class="hero__welcome">All ages, abilities and talents are welcome.</p>
+      <div class="hero__actions">
+        <a class="btn btn--road" href="#schedule">See the schedule</a>
+        <a class="btn btn--frame" data-config-href="volunteerUrl" href="#">Volunteer Sign Up</a>
+      </div>
+    </div>
+    <img class="hero__meadow"
+         src="assets/img/meadow-1200.jpg"
+         srcset="assets/img/meadow-1200.jpg 1200w, assets/img/meadow-2400.jpg 2400w"
+         sizes="100vw"
+         alt="A hand-painted orange road winding through a meadow of California wildflowers, with monarch butterflies overhead"
+         width="2400" height="1350">
+  </header>
+
+  <main class="schedule" id="schedule" tabindex="-1">
+    <div class="schedule__intro">
+      <h2 class="schedule__title">Upcoming Parties</h2>
+      <p class="schedule__note">No need to sign up to jump in and help. Just show up! Community Service Hours are available.</p>
+      <p class="sample-note" hidden>You're looking at sample events. Add your sheet link in <code>config.js</code> to show the real schedule.</p>
+    </div>
+
+    <div class="road" id="road" aria-live="polite">
+      <svg class="road__svg" aria-hidden="true" focusable="false"></svg>
+      <img class="road__bee" src="assets/img/bee.png" alt="" width="159" height="147" aria-hidden="true">
+      <ol class="road__list" id="upcoming">
+        <li class="road__status">Loading the schedule…</li>
+      </ol>
+      <img class="road__butterfly" src="assets/img/butterfly-resting.png" alt="" width="139" height="203" aria-hidden="true">
+    </div>
+
+    <section class="past" aria-labelledby="past-title" hidden>
+      <h2 class="past__title" id="past-title">Past Parties</h2>
+      <button class="btn btn--ghost past__toggle" type="button" aria-expanded="false" aria-controls="past-list">Show past parties</button>
+      <ul class="past__list" id="past-list" hidden></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <img class="footer__butterfly" src="assets/img/butterfly.png" alt="" width="346" height="253" aria-hidden="true">
+    <h2 class="footer__title">Sign up to bee invited!</h2>
+    <p class="footer__text">Hear about the next party first, or join the Party Prep, Party Host or Garden Team.</p>
+    <div class="footer__actions">
+      <a class="btn btn--road" data-config-href="joinUrl" href="#">Join Us</a>
+      <a class="btn btn--light" data-config-href="volunteerUrl" href="#">Volunteer Sign Up</a>
+    </div>
+    <p class="footer__small">Questions? Email <a data-config-mail="contactEmail" href="#">beehighways1@gmail.com</a><br><a href="https://beehighways.org/">beehighways.org</a></p>
+  </footer>
+
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="lightbox__close" type="button" aria-label="Close photo">×</button>
+    <button class="lightbox__nav lightbox__prev" type="button" aria-label="Previous photo">‹</button>
+    <img class="lightbox__img" alt="">
+    <button class="lightbox__nav lightbox__next" type="button" aria-label="Next photo">›</button>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="sample-events.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
