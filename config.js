@@ -8,7 +8,7 @@ window.BH_CONFIG = {
   // Google Sheet > File > Share > Publish to web > pick the "Events" tab >
   // pick "Comma-separated values (.csv)" > Publish > copy the link.
   // Leave it empty ("") to show the sample events while you set things up.
-  sheetCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTOBHRROZRXDfEqVB62EThX5kzwIyg66wW_xbXTpYSBWLyR2P3cjVzbCNffXOMiSnEGm5wiijJp3NIN/pub?gid=1026634752&single=true&output=csv",
+  sheetCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2V40D-eiR2FfEiQhIeDlkyLSzd0wFPJbwej6WtMoZXozNVavdCZmrqo6AbbdmMZ8lLBt_h_7wytpI/pub?gid=51536016&single=true&output=csv",
 
   // ------------------------------------------------------------
   // EVENT TYPES
