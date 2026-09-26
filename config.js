@@ -39,8 +39,8 @@ window.BH_CONFIG = {
       name: "Sheet Mulching Party",
       match: "mulch",
       color: "goldenrod",
-      short: "Help us turn lawn into a home for native plants. Music, snacks & fun!",
-      full: "Sheet mulching smothers lawn without chemicals so native plants can move in. We lay down cardboard, soak it, and pile mulch on top. It's messy and very satisfying.\n\nAll ages, abilities and talents are welcome. Community Service Hours are available.",
+      short: "Help us prepare the land for native plants. Music, snacks & fun!",
+      full: "Sheet mulching smothers weeds without chemicals so native plants can move in. We lay down cardboard, soak it, and pile mulch on top. It's messy and very satisfying.\n\nAll ages, abilities and talents are welcome. Community Service Hours are available.",
       bring: "Gloves, a rake if you have one, and shoes you don't mind getting dirty.",
     },
     {
