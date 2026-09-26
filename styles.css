@@ -68,6 +68,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; height: auto; display: block; }
+/* Keep the bee and monarchs in proportion no matter what else styles the page. */
+.road__bee, .road__butterfly, .footer__butterfly { height: auto !important; max-width: none; }
 a { color: var(--frame); text-underline-offset: 3px; }
 code { font-size: 0.9em; background: var(--paper-warm); padding: 0 4px; border-radius: 4px; }
 
@@ -204,6 +206,10 @@ code { font-size: 0.9em; background: var(--paper-warm); padding: 0 4px; border-r
 .stop[data-side="left"] .card { grid-column: 1; }
 /* On wide screens, neighboring stops overlap so the road zig-zags between them. */
 @media (min-width: 760px) { .stop + .stop { margin-top: -200px; } }
+/* Each stop's row is full width, so let clicks pass through its empty side
+   to the card underneath; only the card and marker catch clicks. */
+.stop { pointer-events: none; }
+.stop .card, .stop__marker { pointer-events: auto; }
 .stop[data-side="right"] .card { grid-column: 3; }
 
 .stop__marker {
