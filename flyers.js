@@ -63,8 +63,14 @@
     headline: $("f-headline"), place: $("f-place"), uselogo: $("f-uselogo"), logo: $("f-logo"),
     dates: $("f-dates"), details: $("f-details"), contact: $("f-contact"), qr: $("f-qr"), small: $("f-small"),
     photo: $("f-photo"), photofile: $("f-photofile"), photox: $("f-photox"), photoy: $("f-photoy"), zoom: $("f-zoom"),
-    monarch: $("f-monarch"), ctitle: $("f-ctitle"), csub: $("f-csub")
+    monarch: $("f-monarch"), ctitle: $("f-ctitle"), csub: $("f-csub"),
+    fade: $("f-fade"), fadecolor: $("f-fadecolor")
   };
+  // Color of the fade behind the words on photo flyers, as "r,g,b".
+  function fadeColor() {
+    var hex = (f.fadecolor.value || "#55bee9").replace("#", "");
+    return [0, 2, 4].map(function (i) { return parseInt(hex.substr(i, 2), 16); }).join(",");
+  }
   var canvases = {
     "square-garden": $("c-square-garden"), "square-photo": $("c-square-photo"),
     "letter-garden": $("c-letter-garden"), "letter-photo": $("c-letter-photo"),
@@ -73,7 +79,8 @@
 
   var state = {
     events: [], selected: [], logoImg: null, photoImg: null, uploadedPhoto: null, art: {},
-    collage: { uploaded: [null, null, null], fromEvent: [null, null, null], samples: [null, null, null] }
+    collage: { uploaded: [null, null, null], fromEvent: [null, null, null], samples: [null, null, null] },
+    room: {}
   };
 
   /* ---------- images ---------- */
@@ -423,10 +430,12 @@
     ctx.textAlign = "left";
   }
 
+  // Returns which directions have room to move (the photo is bigger than the space that way).
   function coverImage(ctx, img, W, H, px, py, zoom) {
     var iw = img.naturalWidth, ih = img.naturalHeight, sc = Math.max(W / iw, H / ih) * zoom;
     var dw = iw * sc, dh = ih * sc;
     ctx.drawImage(img, (W - dw) * px, (H - dh) * py, dw, dh);
+    return { x: dw - W > 2, y: dh - H > 2 };
   }
 
   function renderOne(sizeKey, variant, data) {
@@ -454,7 +463,7 @@
       if (frameH < fmt.h) { ctx.fillStyle = "#3a4a2a"; ctx.fillRect(0, frameH, fmt.w, fmt.h - frameH); }
       ctx.save();
       ctx.beginPath(); ctx.rect(0, 0, fmt.w, frameH); ctx.clip();
-      coverImage(ctx, photo, fmt.w, frameH, f.photox.value / 100, f.photoy.value / 100, f.zoom.value / 100);
+      state.room[sizeKey] = coverImage(ctx, photo, fmt.w, frameH, f.photox.value / 100, f.photoy.value / 100, f.zoom.value / 100);
       ctx.restore();
     }
     var lay = layout(ctx, fmt, U, data);
@@ -467,9 +476,10 @@
       });
       var fadeEnd = Math.min(textEnd + 150 * U, fmt.h * 0.75);
       var g = ctx.createLinearGradient(0, 0, 0, fadeEnd);
-      g.addColorStop(0, "rgba(" + SKY + ",0.95)");
-      g.addColorStop(Math.max(0.05, (textEnd - 30 * U) / fadeEnd), "rgba(" + SKY + ",0.82)");
-      g.addColorStop(1, "rgba(" + SKY + ",0)");
+      var tint = fadeColor(), strength = f.fade.value / 100;
+      g.addColorStop(0, "rgba(" + tint + "," + (0.95 * strength) + ")");
+      g.addColorStop(Math.max(0.05, (textEnd - 30 * U) / fadeEnd), "rgba(" + tint + "," + (0.82 * strength) + ")");
+      g.addColorStop(1, "rgba(" + tint + ",0)");
       ctx.fillStyle = g; ctx.fillRect(0, 0, fmt.w, fadeEnd);
       if (!fmt.fadeAll) {
         // A soft shadow band behind the white date and details so they read on busy photos.
@@ -559,6 +569,12 @@
     return { title: (d.headline + " " + d.place).trim(), sub: sub };
   }
 
+  function names(keys) {
+    var n = keys.map(function (k) { return { square: "square", letter: "letter", wide: "16:9" }[k]; });
+    var list = n.length > 1 ? n.slice(0, -1).join(", ") + " and " + n[n.length - 1] : n[0];
+    return list + (n.length > 1 ? " versions" : " version");
+  }
+
   var queued = false;
   function render() {
     if (queued) return;
@@ -579,6 +595,16 @@
         });
       });
       renderCollage(data);
+      // Explain when a slider can't move the photo because it already fits that way.
+      var r = state.room, hint = $("photo-hint"), msgs = [];
+      if (state.uploadedPhoto || state.photoImg) {
+        var noY = ["square", "letter", "wide"].filter(function (k) { return r[k] && !r[k].y; });
+        var noX = ["square", "letter", "wide"].filter(function (k) { return r[k] && !r[k].x; });
+        if (noY.length) msgs.push("Up / down can't move the " + names(noY) + " because the whole photo already fits top to bottom. Zoom in a little first.");
+        if (noX.length) msgs.push("Left / right can't move the " + names(noX) + " because the whole photo already fits side to side. Zoom in a little first.");
+      }
+      hint.textContent = msgs.join(" ");
+      hint.hidden = !msgs.length;
       document.querySelector('[data-download="wide-collage"]').disabled = !any;
     });
   }
@@ -739,8 +765,11 @@
     resetPhotoPosition();
     if (withPhotos) loadPhoto(withPhotos.photos, +f.photo.value);
   });
+  document.querySelectorAll("[data-fade]").forEach(function (b) {
+    b.addEventListener("click", function () { f.fadecolor.value = b.getAttribute("data-fade"); render(); });
+  });
   $("photo-reset").addEventListener("click", function () { resetPhotoPosition(); render(); });
-  [f.headline, f.place, f.dates, f.details, f.contact, f.qr, f.small, f.photox, f.photoy, f.zoom, f.ctitle, f.csub].forEach(function (el) { el.addEventListener("input", render); });
+  [f.headline, f.place, f.dates, f.details, f.contact, f.qr, f.small, f.photox, f.photoy, f.zoom, f.ctitle, f.csub, f.fade, f.fadecolor].forEach(function (el) { el.addEventListener("input", render); });
   [f.uselogo, f.monarch].forEach(function (el) { el.addEventListener("change", render); });
 
   /* ---------- download ---------- */

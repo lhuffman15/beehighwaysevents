@@ -95,3 +95,8 @@ code { font-size: 0.9em; background: var(--paper); padding: 0 4px; border-radius
 .drop + .check { margin-top: 10px; }
 .group--wide { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
 .step .drop + .drop { margin-top: 8px; }
+.swatches { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+.swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #d9cdb6; cursor: pointer; padding: 0; }
+.swatch:hover { border-color: var(--frame); }
+.swatch--custom { position: relative; overflow: hidden; background: conic-gradient(#e4843c, #d19635, #758859, #5fc0dd, #981940, #e4843c); }
+.swatch--custom input { position: absolute; inset: -8px; width: 48px; height: 48px; opacity: 0; cursor: pointer; }
