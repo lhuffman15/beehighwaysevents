@@ -39,8 +39,8 @@ window.BH_CONFIG = {
       name: "Sheet Mulching Party",
       match: "mulch",
       color: "goldenrod",
-      short: "Help us prepare the land for native plants. Music, snacks & fun!",
-      full: "Sheet mulching smothers weeds without chemicals so native plants can move in. We lay down cardboard, soak it, and pile mulch on top. It's messy and very satisfying.\n\nAll ages, abilities and talents are welcome. Community Service Hours are available.",
+      short: "Help us turn lawn into a home for native plants. Music, snacks & fun!",
+      full: "Sheet mulching smothers lawn without chemicals so native plants can move in. We lay down cardboard, soak it, and pile mulch on top. It's messy and very satisfying.\n\nAll ages, abilities and talents are welcome. Community Service Hours are available.",
       bring: "Gloves, a rake if you have one, and shoes you don't mind getting dirty.",
     },
     {
@@ -62,6 +62,11 @@ window.BH_CONFIG = {
     bring: "",
   },
 
+  // Past events leave the road automatically once they end.
+  // true = also list them in a "Past Parties" section (behind a button)
+  // false = hide them from the page completely
+  showPastEvents: true,
+
   // Time zone for "Add to calendar" links.
   timeZone: "America/Los_Angeles",
 
@@ -72,6 +77,12 @@ window.BH_CONFIG = {
 
   // Button text when an event has a link but no custom button text.
   defaultLinkText: "Event details",
+
+  // Contact line printed on letter-size flyers (you can change it per flyer).
+  flyerContact: "Questions? Email hello@livinggardendesign.com",
+
+  // Where the QR code on letter flyers points when an event has no link.
+  flyerQrDefault: "https://beehighways.org",
 
   // Photo shown when an event has no photos.
   fallbackPhoto: "assets/img/meadow-1200.jpg",

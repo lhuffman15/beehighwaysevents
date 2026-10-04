@@ -95,6 +95,16 @@
     return [u];
   }
 
+  // Standard text for an event type, from config.js.
+  function typeInfo(t) {
+    var name = (t || "").toLowerCase(), types = CONFIG.eventTypes || [];
+    for (var i = 0; i < types.length; i++) {
+      var words = [types[i].match, types[i].name].filter(Boolean);
+      for (var j = 0; j < words.length; j++) if (name.indexOf(String(words[j]).toLowerCase()) > -1) return types[i];
+    }
+    return CONFIG.otherEventType || {};
+  }
+
   function toEvents(rows) {
     var cols = mapColumns(rows[0]);
     function get(r, key) { return cols[key] > -1 ? (r[cols[key]] || "").trim() : ""; }
@@ -114,10 +124,15 @@
         venue: get(r, "venue"),
         address: get(r, "address"),
         link: get(r, "link"),
+        short: get(r, "short"),
+        bring: get(r, "bring"),
         logo: (get(r, "logo").match(/https?:\/\/\S+/) || [""])[0],
         photos: []
       };
       if (ev.startMin == null) ev.endMin = null;
+      var info = typeInfo(ev.type);
+      if (!ev.short && info.short) ev.short = info.short;
+      if (!ev.bring && info.bring) ev.bring = info.bring;
       cols.photos.forEach(function (c) {
         (r[c] || "").split(/[\s,]+/).forEach(function (u) { if (/^https?:\/\//.test(u)) ev.photos.push(u); });
       });

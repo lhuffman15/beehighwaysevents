@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="flyers.css?v=1">
+  <link rel="stylesheet" href="flyers.css?v=3">
 </head>
 <body>
   <header class="top">
@@ -40,11 +40,12 @@
         </label>
         <div class="field">
           <span class="field__label">Venue logo <span class="opt">optional</span></span>
-          <label class="check"><input type="checkbox" id="f-uselogo"> Show the venue's logo instead of the place name</label>
           <label class="drop" id="logo-drop">
             <input type="file" id="f-logo" accept="image/*">
             <span id="logo-status">Drop a logo here, or click to choose one. PNG with a see-through background works best.</span>
           </label>
+          <label class="check"><input type="checkbox" id="f-uselogo"> On square flyers, show the logo instead of the place name</label>
+          <span class="hint">Letter flyers show the logo in a white box under the QR code.</span>
         </div>
         <label class="field">
           <span class="field__label">Dates</span>
@@ -52,7 +53,20 @@
           <span class="hint">One line each. For several dates, add <b>|</b> and a label, like <code>Sat, Sept 12 | Sheet Mulch Party</code></span>
         </label>
         <label class="field">
-          <span class="field__label">Small print</span>
+          <span class="field__label">Details <span class="opt">letter</span></span>
+          <textarea id="f-details" rows="3"></textarea>
+        </label>
+        <label class="field">
+          <span class="field__label">Questions line <span class="opt">letter</span></span>
+          <input type="text" id="f-contact">
+        </label>
+        <label class="field">
+          <span class="field__label">QR code goes to <span class="opt">letter</span></span>
+          <input type="text" id="f-qr" inputmode="url">
+          <span class="hint">Scanning the code opens this link.</span>
+        </label>
+        <label class="field">
+          <span class="field__label">Small print <span class="opt">square</span></span>
           <input type="text" id="f-small">
         </label>
       </section>
@@ -67,38 +81,87 @@
           <input type="file" id="f-photofile" accept="image/*">
           <span id="photo-status">Drop a photo here, or click to choose one.</span>
         </label>
+        <div class="field">
+          <span class="field__label">Position the photo</span>
+          <label class="slider"><span>Left / right</span><input type="range" id="f-photox" min="0" max="100" value="50"></label>
+          <label class="slider"><span>Up / down</span><input type="range" id="f-photoy" min="0" max="100" value="50"></label>
+          <label class="slider"><span>Zoom</span><input type="range" id="f-zoom" min="100" max="300" value="100"></label>
+          <button class="linkbtn" type="button" id="photo-reset">Reset photo position</button>
+        </div>
+        <label class="check"><input type="checkbox" id="f-monarch" checked> Big monarch on the letter photo flyer</label>
+      </section>
+
+      <section class="step">
+        <h2 class="step__title"><span class="step__num">4</span> Photo collage <span class="opt">16:9</span></h2>
         <label class="field">
-          <span class="field__label">Photo position</span>
-          <input type="range" id="f-photopos" min="0" max="100" value="50">
-          <span class="hint">Slide to choose which part of the photo shows.</span>
+          <span class="field__label">Title</span>
+          <input type="text" id="f-ctitle">
         </label>
+        <label class="field">
+          <span class="field__label">Subtitle</span>
+          <input type="text" id="f-csub">
+        </label>
+        <p class="hint">Uses the event's photos when it has two or more, otherwise three sample photos. Drop your own into any spot.</p>
+        <label class="drop" id="slot1-drop"><input type="file" id="f-slot1" accept="image/*"><span id="slot1-status">Photo 1: Sample photo. Drop or click to replace.</span></label>
+        <label class="drop" id="slot2-drop"><input type="file" id="f-slot2" accept="image/*"><span id="slot2-status">Photo 2: Sample photo. Drop or click to replace.</span></label>
+        <label class="drop" id="slot3-drop"><input type="file" id="f-slot3" accept="image/*"><span id="slot3-status">Photo 3: Sample photo. Drop or click to replace.</span></label>
+        <button class="linkbtn" type="button" id="collage-reset">Undo my collage photos</button>
       </section>
     </form>
 
     <section class="previews" aria-label="Flyer previews">
       <p class="notice" id="notice" hidden></p>
-      <div class="preview">
-        <div class="preview__head">
-          <h2 class="preview__title">Garden path</h2>
-          <span class="preview__size">2160 × 2160 px</span>
+      <h2 class="group-title">Square social</h2>
+      <div class="group">
+        <div class="preview">
+          <div class="preview__head"><h3 class="preview__title">Garden path</h3><span class="preview__size">2160 × 2160 px</span></div>
+          <canvas id="c-square-garden" width="2160" height="2160" aria-label="Square garden path flyer preview"></canvas>
+          <button class="btn" type="button" data-download="square-garden" disabled>Download</button>
         </div>
-        <canvas id="c-garden" width="2160" height="2160" aria-label="Garden path flyer preview"></canvas>
-        <button class="btn" type="button" data-download="garden" disabled>Download</button>
+        <div class="preview">
+          <div class="preview__head"><h3 class="preview__title">Photo</h3><span class="preview__size">2160 × 2160 px</span></div>
+          <canvas id="c-square-photo" width="2160" height="2160" aria-label="Square photo flyer preview"></canvas>
+          <button class="btn" type="button" data-download="square-photo" disabled>Download</button>
+        </div>
       </div>
-      <div class="preview">
-        <div class="preview__head">
-          <h2 class="preview__title">Photo</h2>
-          <span class="preview__size">2160 × 2160 px</span>
+      <h2 class="group-title">16:9 slides and screens</h2>
+      <div class="group group--wide">
+        <div class="preview">
+          <div class="preview__head"><h3 class="preview__title">Garden path</h3><span class="preview__size">2560 × 1440 px</span></div>
+          <canvas id="c-wide-garden" width="2560" height="1440" aria-label="16:9 garden path flyer preview"></canvas>
+          <button class="btn" type="button" data-download="wide-garden" disabled>Download</button>
         </div>
-        <canvas id="c-photo" width="2160" height="2160" aria-label="Photo flyer preview"></canvas>
-        <button class="btn" type="button" data-download="photo" disabled>Download</button>
+        <div class="preview">
+          <div class="preview__head"><h3 class="preview__title">Photo</h3><span class="preview__size">2560 × 1440 px</span></div>
+          <canvas id="c-wide-photo" width="2560" height="1440" aria-label="16:9 photo flyer preview"></canvas>
+          <button class="btn" type="button" data-download="wide-photo" disabled>Download</button>
+        </div>
+        <div class="preview">
+          <div class="preview__head"><h3 class="preview__title">Photo collage</h3><span class="preview__size">2560 × 1440 px</span></div>
+          <canvas id="c-wide-collage" width="2560" height="1440" aria-label="16:9 photo collage preview"></canvas>
+          <button class="btn" type="button" data-download="wide-collage" disabled>Download</button>
+        </div>
+      </div>
+      <h2 class="group-title">Letter, for printing</h2>
+      <div class="group">
+        <div class="preview">
+          <div class="preview__head"><h3 class="preview__title">Garden path</h3><span class="preview__size">8.5 × 11 in, 300 dpi</span></div>
+          <canvas id="c-letter-garden" width="2550" height="3300" aria-label="Letter garden path flyer preview"></canvas>
+          <button class="btn" type="button" data-download="letter-garden" disabled>Download</button>
+        </div>
+        <div class="preview">
+          <div class="preview__head"><h3 class="preview__title">Photo</h3><span class="preview__size">8.5 × 11 in, 300 dpi</span></div>
+          <canvas id="c-letter-photo" width="2550" height="3300" aria-label="Letter photo flyer preview"></canvas>
+          <button class="btn" type="button" data-download="letter-photo" disabled>Download</button>
+        </div>
       </div>
     </section>
   </main>
 
   <script src="config.js?v=7"></script>
   <script src="sample-events.js?v=7"></script>
-  <script src="bh-data.js?v=1"></script>
-  <script src="flyers.js?v=1"></script>
+  <script src="vendor/qrcode-generator.js"></script>
+  <script src="bh-data.js?v=2"></script>
+  <script src="flyers.js?v=3"></script>
 </body>
 </html>
