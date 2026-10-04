@@ -67,6 +67,10 @@
     fade: $("f-fade"), fadecolor: $("f-fadecolor")
   };
   // Color of the fade behind the words on photo flyers, as "r,g,b".
+  function isLight(hex) {
+    var h = hex.replace("#", ""), r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.62;
+  }
   function fadeColor() {
     var hex = (f.fadecolor.value || "#55bee9").replace("#", "");
     return [0, 2, 4].map(function (i) { return parseInt(hex.substr(i, 2), 16); }).join(",");
@@ -80,7 +84,8 @@
   var state = {
     events: [], selected: [], logoImg: null, photoImg: null, uploadedPhoto: null, art: {},
     collage: { uploaded: [null, null, null], fromEvent: [null, null, null], samples: [null, null, null] },
-    room: {}
+    room: {},
+    textColors: { headline: null, place: null, dates: null, details: null } // null = automatic
   };
 
   /* ---------- images ---------- */
@@ -507,12 +512,22 @@
 
     // On photo versions of the square and 16:9, the date and details sit on the photo, so they're white.
     var onPhoto = variant === "photo" && !fmt.fadeAll;
-    drawText(ctx, U, cx, lay, {
+    var colors = {
       headline: COLORS.green, place: COLORS.orange,
       details: onPhoto ? COLORS.white : COLORS.ink,
       dates: onPhoto ? COLORS.white : COLORS.crimson,
       small: onPhoto ? COLORS.white : COLORS.crimson
-    }, { dates: onPhoto, small: onPhoto, details: onPhoto });
+    };
+    var glow = { dates: onPhoto, small: onPhoto, details: onPhoto };
+    // Colors picked in step 2 replace the automatic ones; light colors get a soft shadow so they stay readable.
+    var tc = state.textColors;
+    ["headline", "place", "dates", "details"].forEach(function (role) {
+      if (!tc[role]) return;
+      colors[role] = tc[role];
+      glow[role] = isLight(tc[role]);
+      if (role === "dates") { colors.small = tc.dates; glow.small = glow.dates; }
+    });
+    drawText(ctx, U, cx, lay, colors, glow);
     return true;
   }
 
@@ -550,7 +565,7 @@
       setFont(ctx, DISPLAY, ts);
       var tw = ctx.measureText(data.ctitle).width;
       if (tw > maxW) { ts = Math.floor(ts * maxW / tw); setFont(ctx, DISPLAY, ts); }
-      ctx.fillStyle = COLORS.crimson; ctx.textAlign = "center";
+      ctx.fillStyle = state.textColors.headline || COLORS.crimson; ctx.textAlign = "center";
       ctx.fillText(data.ctitle, cx, 22 * U + 64 * U * 0.8 - (64 * U - ts) * 0.4);
     }
     if (data.csub) {
@@ -768,6 +783,37 @@
   document.querySelectorAll("[data-fade]").forEach(function (b) {
     b.addEventListener("click", function () { f.fadecolor.value = b.getAttribute("data-fade"); render(); });
   });
+  // Text color pickers (step 2): Auto, the brand colors, or any color.
+  var TEXT_SWATCHES = [["#495c2d", "Green"], ["#b56a40", "Orange"], ["#981940", "Crimson"], ["#30303c", "Charcoal"], ["#ffffff", "White"]];
+  var ROLES = [["headline", "Headline"], ["place", "Place"], ["dates", "Dates"], ["details", "Details"]];
+  var tcBox = $("text-colors");
+  tcBox.innerHTML = ROLES.map(function (r) {
+    return '<div class="tc-row" data-role="' + r[0] + '"><span class="tc-name">' + r[1] + "</span>" +
+      '<button type="button" class="swatch swatch--auto is-on" data-color="" aria-label="' + r[1] + ': automatic" title="Automatic">A</button>' +
+      TEXT_SWATCHES.map(function (c) {
+        return '<button type="button" class="swatch" data-color="' + c[0] + '" style="background:' + c[0] + '" aria-label="' + r[1] + ": " + c[1] + '" title="' + c[1] + '"></button>';
+      }).join("") +
+      '<label class="swatch swatch--custom" title="Pick any color"><input type="color" value="#981940" aria-label="' + r[1] + ': pick any color"></label></div>';
+  }).join("");
+  function setTextColor(row, color) {
+    state.textColors[row.getAttribute("data-role")] = color || null;
+    row.querySelectorAll(".swatch").forEach(function (s) {
+      var on = s.classList.contains("swatch--custom") ? (color && !s.parentNode.querySelector('[data-color="' + color + '"]')) : (s.getAttribute("data-color") || "") === (color || "");
+      s.classList.toggle("is-on", !!on);
+    });
+    render();
+  }
+  tcBox.addEventListener("click", function (e) {
+    var b = e.target.closest("button.swatch");
+    if (b) setTextColor(b.closest(".tc-row"), b.getAttribute("data-color"));
+  });
+  tcBox.addEventListener("input", function (e) {
+    if (e.target.type === "color") setTextColor(e.target.closest(".tc-row"), e.target.value);
+  });
+  $("tc-reset").addEventListener("click", function () {
+    tcBox.querySelectorAll(".tc-row").forEach(function (row) { state.textColors[row.getAttribute("data-role")] = null; setTextColor(row, ""); });
+  });
+
   $("photo-reset").addEventListener("click", function () { resetPhotoPosition(); render(); });
   [f.headline, f.place, f.dates, f.details, f.contact, f.qr, f.small, f.photox, f.photoy, f.zoom, f.ctitle, f.csub, f.fade, f.fadecolor].forEach(function (el) { el.addEventListener("input", render); });
   [f.uselogo, f.monarch].forEach(function (el) { el.addEventListener("change", render); });
