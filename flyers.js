@@ -15,6 +15,7 @@
       sizes: { headline: 90, place: 78, date: 112, dateMany: 86, dateLabel: 84 },
       art: { garden: "assets/flyers/square-garden.jpg", overlay: "assets/flyers/square-meadow-overlay.webp" },
       bhLogo: { x: 54, bottom: 1029, w: 196 },
+      photoFrame: 460 / 612,   // photo fills the top, ending 152pt above the bottom (InDesign)
       small: true
     },
     letter: {
@@ -27,6 +28,7 @@
       qr: { x: 50, w: 150 },
       contact: { right: 800, bottom: 1060, size: 22, maxW: 330 },
       monarch: { x: 600, y: 568, w: 215 },
+      photoFrame: 576 / 792,   // photo ends 216pt above the bottom (InDesign)
       fadeAll: true
     },
     wide: {
@@ -447,7 +449,13 @@
     if (variant === "garden") {
       if (art.garden) ctx.drawImage(art.garden, 0, 0, fmt.w, fmt.h);
     } else {
-      coverImage(ctx, photo, fmt.w, fmt.h, f.photox.value / 100, f.photoy.value / 100, f.zoom.value / 100);
+      // The photo fills the space above the meadow; the meadow art covers everything below it.
+      var frameH = Math.round(fmt.h * (fmt.photoFrame || 1));
+      if (frameH < fmt.h) { ctx.fillStyle = "#3a4a2a"; ctx.fillRect(0, frameH, fmt.w, fmt.h - frameH); }
+      ctx.save();
+      ctx.beginPath(); ctx.rect(0, 0, fmt.w, frameH); ctx.clip();
+      coverImage(ctx, photo, fmt.w, frameH, f.photox.value / 100, f.photoy.value / 100, f.zoom.value / 100);
+      ctx.restore();
     }
     var lay = layout(ctx, fmt, U, data);
 
