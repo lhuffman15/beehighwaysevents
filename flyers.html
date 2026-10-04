@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Flyer Maker | Bee Highways</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦋</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="flyers.css?v=1">
+</head>
+<body>
+  <header class="top">
+    <p class="top__brand">Bee Highways</p>
+    <h1 class="top__title">Flyer Maker</h1>
+    <p class="top__lede">Pick an event, check the words, and download. Everything comes from the event form, and you can change anything before downloading.</p>
+  </header>
+
+  <main class="maker">
+    <form class="panel" id="controls" autocomplete="off" onsubmit="return false">
+      <section class="step">
+        <h2 class="step__title"><span class="step__num">1</span> Pick an event</h2>
+        <p class="hint">Pick two or three at the same place to list several dates on one flyer.</p>
+        <div class="events" id="events" role="group" aria-label="Events">
+          <p class="hint">Loading events…</p>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="step__title"><span class="step__num">2</span> Check the words</h2>
+        <label class="field">
+          <span class="field__label">Headline</span>
+          <input type="text" id="f-headline">
+        </label>
+        <label class="field">
+          <span class="field__label">Place</span>
+          <input type="text" id="f-place">
+        </label>
+        <div class="field">
+          <span class="field__label">Venue logo <span class="opt">optional</span></span>
+          <label class="check"><input type="checkbox" id="f-uselogo"> Show the venue's logo instead of the place name</label>
+          <label class="drop" id="logo-drop">
+            <input type="file" id="f-logo" accept="image/*">
+            <span id="logo-status">Drop a logo here, or click to choose one. PNG with a see-through background works best.</span>
+          </label>
+        </div>
+        <label class="field">
+          <span class="field__label">Dates</span>
+          <textarea id="f-dates" rows="3"></textarea>
+          <span class="hint">One line each. For several dates, add <b>|</b> and a label, like <code>Sat, Sept 12 | Sheet Mulch Party</code></span>
+        </label>
+        <label class="field">
+          <span class="field__label">Small print</span>
+          <input type="text" id="f-small">
+        </label>
+      </section>
+
+      <section class="step">
+        <h2 class="step__title"><span class="step__num">3</span> Photo <span class="opt">for the photo version</span></h2>
+        <label class="field" id="photo-pick-wrap" hidden>
+          <span class="field__label">Which photo</span>
+          <select id="f-photo"></select>
+        </label>
+        <label class="drop" id="photo-drop">
+          <input type="file" id="f-photofile" accept="image/*">
+          <span id="photo-status">Drop a photo here, or click to choose one.</span>
+        </label>
+        <label class="field">
+          <span class="field__label">Photo position</span>
+          <input type="range" id="f-photopos" min="0" max="100" value="50">
+          <span class="hint">Slide to choose which part of the photo shows.</span>
+        </label>
+      </section>
+    </form>
+
+    <section class="previews" aria-label="Flyer previews">
+      <p class="notice" id="notice" hidden></p>
+      <div class="preview">
+        <div class="preview__head">
+          <h2 class="preview__title">Garden path</h2>
+          <span class="preview__size">2160 × 2160 px</span>
+        </div>
+        <canvas id="c-garden" width="2160" height="2160" aria-label="Garden path flyer preview"></canvas>
+        <button class="btn" type="button" data-download="garden" disabled>Download</button>
+      </div>
+      <div class="preview">
+        <div class="preview__head">
+          <h2 class="preview__title">Photo</h2>
+          <span class="preview__size">2160 × 2160 px</span>
+        </div>
+        <canvas id="c-photo" width="2160" height="2160" aria-label="Photo flyer preview"></canvas>
+        <button class="btn" type="button" data-download="photo" disabled>Download</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js?v=7"></script>
+  <script src="sample-events.js?v=7"></script>
+  <script src="bh-data.js?v=1"></script>
+  <script src="flyers.js?v=1"></script>
+</body>
+</html>

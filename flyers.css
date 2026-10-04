@@ -1,0 +1,88 @@
+/* Bee Highways — Flyer Maker */
+@font-face { font-family: "A Love of Thunder"; src: url("assets/fonts/ALoveOfThunder.ttf") format("truetype"); font-display: block; }
+@font-face { font-family: "Architects Daughter"; src: url("assets/fonts/ArchitectsDaughter.ttf") format("truetype"); font-display: block; }
+
+:root {
+  --ink: #30303c; --ink-muted: #5c5c68; --paper: #fff; --paper-warm: #f6efe2;
+  --sky-top: #5fc0dd; --road: #eda35c; --road-edge: #b4613c; --frame: #981940;
+  --meadow: #495535; --goldenrod: #d19635;
+  --font-display: "A Love of Thunder", Georgia, serif;
+  --font-hand: "Architects Daughter", system-ui, sans-serif;
+  --font-label: Montserrat, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+*, *::before, *::after { box-sizing: inherit; }
+body { margin: 0; background: var(--paper-warm); color: var(--ink); font: 17px/1.5 var(--font-hand); }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+code { font-size: 0.9em; background: var(--paper); padding: 0 4px; border-radius: 4px; }
+
+.top { background: var(--sky-top); text-align: center; padding: 36px 20px 32px; }
+.top__brand { margin: 0; font: 500 13px/1.2 var(--font-label); letter-spacing: 0.2em; text-transform: uppercase; }
+.top__title { margin: 8px 0 0; font: 400 clamp(44px, 7vw, 72px)/1 var(--font-display); color: var(--frame); }
+.top__lede { margin: 12px auto 0; max-width: 52ch; color: #000; text-wrap: balance; }
+
+.maker {
+  display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 32px; align-items: start;
+  max-width: 1400px; margin: 0 auto; padding: 32px 24px 64px;
+}
+.panel { background: var(--paper); border-radius: 16px; padding: 8px 24px 24px; position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow: auto; }
+.step { padding-top: 16px; }
+.step + .step { border-top: 2px dashed var(--paper-warm); margin-top: 16px; }
+.step__title { margin: 0 0 8px; font: 400 26px/1.1 var(--font-display); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.step__num { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--frame); color: #fff; font: 600 14px/1 var(--font-label); }
+.opt { font: 500 11px/1 var(--font-label); letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-muted); }
+.hint { margin: 4px 0 0; font-size: 15px; color: var(--ink-muted); display: block; }
+
+.events { display: grid; gap: 8px; margin-top: 10px; }
+.ev {
+  display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
+  padding: 10px 12px; border: 2px solid var(--paper-warm); border-radius: 12px; cursor: pointer; background: var(--paper);
+}
+.ev:hover { border-color: var(--road); }
+.ev:has(input:checked) { border-color: var(--frame); background: #fbf3f5; }
+.ev input { margin-top: 5px; width: 18px; height: 18px; accent-color: var(--frame); }
+.ev__date { display: block; font: 600 11px/1.3 var(--font-label); letter-spacing: 0.15em; text-transform: uppercase; color: var(--frame); }
+.ev__title { display: block; line-height: 1.3; }
+
+.field { display: block; margin-top: 14px; }
+.field__label { display: block; margin-bottom: 4px; font: 600 11px/1.3 var(--font-label); letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-muted); }
+.field input[type="text"], .field textarea, .field select {
+  width: 100%; padding: 9px 12px; border: 2px solid #e4dccd; border-radius: 10px;
+  font: 17px/1.4 var(--font-hand); color: var(--ink); background: var(--paper);
+}
+.field textarea { resize: vertical; }
+.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--frame); outline: none; }
+.field input[type="range"] { width: 100%; accent-color: var(--frame); }
+.check { display: flex; gap: 8px; align-items: center; font-size: 16px; margin-bottom: 8px; cursor: pointer; }
+.check input { width: 18px; height: 18px; accent-color: var(--frame); }
+
+.drop {
+  position: relative; display: block; margin-top: 8px; padding: 14px; text-align: center;
+  border: 2px dashed #d9cdb6; border-radius: 12px; font-size: 15px; color: var(--ink-muted); cursor: pointer;
+}
+.drop:hover, .drop.is-over { border-color: var(--frame); color: var(--ink); }
+.drop.is-set { border-style: solid; border-color: var(--meadow); color: var(--ink); }
+.drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+.previews { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+.notice { grid-column: 1 / -1; margin: 0; padding: 12px 16px; background: var(--paper); border: 2px solid var(--goldenrod); border-radius: 12px; }
+.preview { display: flex; flex-direction: column; gap: 12px; }
+.preview__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.preview__title { margin: 0; font: 400 28px/1 var(--font-display); }
+.preview__size { font: 500 12px/1 var(--font-label); letter-spacing: 0.1em; color: var(--ink-muted); }
+.preview canvas { width: 100%; height: auto; aspect-ratio: 1; border-radius: 6px; background: #e8e1d3; box-shadow: -8px 10px 0 var(--frame); }
+
+.btn {
+  align-self: flex-start; min-height: 44px; padding: 10px 24px; border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--road); color: var(--ink); font: 600 13px/1.2 var(--font-label); letter-spacing: 0.2em; text-transform: uppercase;
+}
+.btn:hover { background: #e3924a; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+@media (max-width: 860px) {
+  .maker { grid-template-columns: 1fr; padding: 20px 16px 48px; }
+  .panel { position: static; max-height: none; }
+}
