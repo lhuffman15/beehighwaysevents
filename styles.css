@@ -62,7 +62,7 @@ html { scroll-padding-top: env(safe-area-inset-top, 0px); scroll-behavior: smoot
 
 body {
   margin: 0;
-  background: var(--paper);
+  background: #e9ece9;
   color: var(--ink);
   font: 18px/1.55 var(--font-hand);
   -webkit-font-smoothing: antialiased;
